@@ -1,37 +1,48 @@
 import { NextResponse } from "next/server";
-// Handles GET requests to /api
-const Sequelize = require("sequelize");
-
-async function getSequelizeConnection() {
-  const sequelize = new Sequelize("pomme_d_api", "admin", "password", {
-    host: "localhost",
-    dialect: "mysql",
-  });
-
-  // Tester la connexion
-  try {
-    await sequelize.authenticate();
-    console.log("Connexion à la base de données réussie !");
-  } catch (error) {
-    console.error("Échec de la connexion à la base de données :", error);
-    throw error;
-  }
-
-  return sequelize;
-}
+import { getSequelizeConnection } from "../db";
 
 export async function GET(request) {
   try {
     const sequelize = await getSequelizeConnection();
-    console.log(sequelize);
-    // Utiliser sequelize ici
-    console.log("Connexion à la base de données réussie !");
-    return NextResponse.json({ message: "Hello World" });
-  } catch (error) {
-    console.error("Erreur de connexion à la base de données :", error);
-    return NextResponse.json({
-      error: "La connexion à la base de données a échoué.",
+
+    // Define your user model (assuming you have a model named "User")
+    const User = sequelize.define("User", {
+      id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      username: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+      },
+      password: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+      },
+      email: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        field: "created_at",
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: true,
+        field: "updated_at",
+      },
     });
+
+    // Execute the SELECT query
+    const users = await User.findAll();
+
+    return NextResponse.json({ users });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return NextResponse.json({ message: "Error fetching users" });
   }
 }
 

@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 
-async function getSequelizeConnection() {
+export const getSequelizeConnection = async () => {
   const sequelize = new Sequelize("pomme_d_api", "admin", "password", {
     host: "localhost",
     dialect: "mysql",
@@ -16,4 +16,4 @@ async function getSequelizeConnection() {
   }
 
   return sequelize;
-}
+};
