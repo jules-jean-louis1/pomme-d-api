@@ -2,10 +2,16 @@ import { NextResponse } from "next/server";
 import { getSequelizeConnection } from "../db";
 import { defineUserModel } from "@/models/models";
 import bcrypt from "bcryptjs";
+import {
+  validateEmail,
+  validatePassword,
+  validateUsername,
+} from "@/utils/auth";
 
 export async function POST(request) {
   try {
     const data = await request.json();
+    console.log("Data:", data);
     if (
       data.username.length === 0 ||
       data.email.length === 0 ||
@@ -14,8 +20,7 @@ export async function POST(request) {
     ) {
       return NextResponse.json(
         {
-          message:
-            "Username, Email, Password, and Confirm Password are required",
+          message: "Missing fields",
         },
         { status: 400 }
       );
@@ -32,6 +37,15 @@ export async function POST(request) {
         { message: "Username already exists" },
         { status: 400 }
       );
+    }
+    if (!validateUsername(data.username)) {
+      return NextResponse.json(
+        { message: "Invalid Username" },
+        { status: 400 }
+      );
+    }
+    if (!validateEmail(data.email)) {
+      return NextResponse.json({ message: "Invalid email" }, { status: 400 });
     }
     const UsersEmail = await User.findOne({
       where: {
@@ -50,6 +64,12 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+    if (!validatePassword(data.password)) {
+      return NextResponse.json(
+        { message: "Invalid password" },
+        { status: 400 }
+      );
+    }
     const hashedPassword = bcrypt.hashSync(
       data.password,
       "$2a$10$CwTycUXWue0Thq9StjUM0u"
@@ -59,7 +79,10 @@ export async function POST(request) {
       email: data.email,
       password: hashedPassword,
     });
-    return NextResponse.json({ user: user }, { status: 201 });
+    return NextResponse.json(
+      { message: "Create succesfully" },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json({ message: "An error occurred" }, { status: 500 });
