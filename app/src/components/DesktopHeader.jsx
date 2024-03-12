@@ -6,7 +6,7 @@ const DesktopHeader = () => {
     <header className="flex items-center h-14 px-4 border-b bg-white md:px-6 dark:bg-gray-950">
       <Link className="flex items-center gap-2 mr-4" href="#">
         <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Home
+          API
         </span>
       </Link>
       <nav className="hidden md:flex items-center space-x-4 flex-1">
