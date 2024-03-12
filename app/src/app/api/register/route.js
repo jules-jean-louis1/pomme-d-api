@@ -13,28 +13,14 @@ export async function POST(request) {
     const data = await request.json();
     console.log("Data:", data);
     if (
-      data.username.length === 0 ||
-      data.email.length === 0 ||
-      data.password.length === 0 ||
-      data.confirmPassword.length === 0
+      !data.username || data.username.length === 0 ||
+      !data.email || data.email.length === 0 ||
+      !data.password || data.password.length === 0
     ) {
       return NextResponse.json(
         {
           message: "Missing fields",
         },
-        { status: 400 }
-      );
-    }
-    const sequelize = await getSequelizeConnection();
-    const User = defineUserModel(sequelize);
-    const usersUsername = await User.findOne({
-      where: {
-        username: data.username,
-      },
-    });
-    if (usersUsername) {
-      return NextResponse.json(
-        { message: "Username already exists" },
         { status: 400 }
       );
     }
@@ -47,41 +33,36 @@ export async function POST(request) {
     if (!validateEmail(data.email)) {
       return NextResponse.json({ message: "Invalid email" }, { status: 400 });
     }
-    const UsersEmail = await User.findOne({
-      where: {
-        email: data.email,
-      },
-    });
-    if (UsersEmail) {
-      return NextResponse.json(
-        { message: "Email already exists" },
-        { status: 400 }
-      );
-    }
-    if (data.password !== data.confirmPassword) {
-      return NextResponse.json(
-        { message: "Passwords do not match" },
-        { status: 400 }
-      );
-    }
     if (!validatePassword(data.password)) {
       return NextResponse.json(
         { message: "Invalid password" },
         { status: 400 }
       );
     }
-    const hashedPassword = bcrypt.hashSync(
-      data.password,
-      "$2a$10$CwTycUXWue0Thq9StjUM0u"
-    );
-    const user = await User.create({
-      username: data.username,
-      email: data.email,
-      password: hashedPassword,
+    const sequelize = await getSequelizeConnection();
+    const User = defineUserModel(sequelize);
+    const user = await User.findOne({
+      where: {
+        username: data.username,
+        email: data.email,
+      },
     });
+    if (!user) {
+      return NextResponse.json(
+        { message: "User does not exist" },
+        { status: 400 }
+      );
+    }
+    const isPasswordValid = bcrypt.compareSync(data.password, user.password);
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { message: "Invalid password" },
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
-      { message: "Create succesfully" },
-      { status: 201 }
+      { message: "Login successful" },
+      { status: 200 }
     );
   } catch (error) {
     console.error("Error:", error);
@@ -90,5 +71,5 @@ export async function POST(request) {
 }
 
 export async function GET(request) {
-  return NextResponse.json({ message: "Register GET" });
+  return NextResponse.json({ message: "Login GET" });
 }
