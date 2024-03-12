@@ -1,13 +1,19 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const SignupPage = () => {
   const [submit, setSubmit] = useState(false);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
+  const usernameRef = useRef(null);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const confirmPasswordRef = useRef(null);
 
   const sendData = async () => {
+    const username = usernameRef.current.value;
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    const confirmPassword = confirmPasswordRef.current.value;
     try {
       const response = await fetch("/api/register", {
         method: "POST",
@@ -18,6 +24,7 @@ const SignupPage = () => {
           username,
           email,
           password,
+          confirmPassword,
         }),
       });
       const data = await response.json();
@@ -46,22 +53,20 @@ const SignupPage = () => {
           type="text"
           name="username"
           placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          ref={usernameRef}
         />
-        <input
-          type="text"
-          name="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <input type="text" name="email" placeholder="Email" ref={emailRef} />
         <input
           type="password"
           name="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          ref={passwordRef}
+        />
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          ref={confirmPasswordRef}
         />
         <button type="submit">Signup</button>
       </form>
