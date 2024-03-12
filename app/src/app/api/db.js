@@ -1,7 +1,7 @@
 export const Sequelize = require("sequelize");
 
 export const getSequelizeConnection = async () => {
-  const sequelize = new Sequelize("pomme_d_api", "admin", "password", {
+  const sequelize = new Sequelize("pomme_d_api", "root", "", {
     host: "localhost",
     dialect: "mysql",
     dialectModule: require("mysql2"),
