@@ -91,84 +91,100 @@ const SignupPage = () => {
   }, [submit]);
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="w-1/2 h-1/2">
-        <div className="border rounded-md p-4 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <h2 className="text-3xl font-bold pb-3">Inscription</h2>
-          <form method="POST" onSubmit={handleSubmit}>
-            <Label
-              className="text-gray-600 dark:text-gray-400 required"
-              htmlFor="Username"
-            >
-              Nom d'utilisateur
-            </Label>
-            <Input
-              className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
-              type="text"
-              name="username"
-              placeholder="Nom d'utilisateur"
-              ref={usernameRef}
-            />
-            {usernameError && (
-              <p className="text-red-500 text-sm">{usernameError}</p>
-            )}
-            <Label
-              className="text-gray-600 dark:text-gray-400 required"
-              htmlFor="Email"
-            >
-              Email
-            </Label>
-            <Input
-              className={`border-gray-300 dark:border-gray-700 ${
-                emailError ? "border-red-500" : ""
-              } bg-white dark:bg-gray-800`}
-              type="text"
-              name="email"
-              placeholder="Email"
-              ref={emailRef}
-            />
-            {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
-            <Label
-              className="text-gray-600 dark:text-gray-400 required"
-              htmlFor="Password"
-            >
-              Mot de passe
-            </Label>
-            <Input
-              className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
-              type="password"
-              name="password"
-              placeholder="Mot de passe"
-              ref={passwordRef}
-            />
-            {passwordError && (
-              <p className="text-red-500 text-sm">{passwordError}</p>
-            )}
-            <Label
-              className="text-gray-600 dark:text-gray-400 required"
-              htmlFor="ConfirmPassword"
-            >
-              Confirmer le mot de passe
-            </Label>
-            <Input
-              className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirmer le mot de passe"
-              ref={confirmPasswordRef}
-            />
-            {confirmPasswordError && (
-              <p className="text-red-500 text-sm">{confirmPasswordError}</p>
-            )}
-            <div className="h-7">
-              {success && <p className="text-green-500">Inscription réussie</p>}
-              {error && <p className="text-red-500">{error}</p>}
+    <main className="flex justify-center w-full">
+      <section className="w-full p-16">
+        <div className="w-full max-w-[1260px] mx-auto text-center">
+          <div className="flex flex-col justify-center items-center">
+            <h1 className="font-semibold text-6xl mt-[12vh] mb-6 text-center">
+              Inscription
+            </h1>
+            <div className="flex flex-col max-w-[320px] w-full">
+              <div>
+                <form method="POST" onSubmit={handleSubmit}>
+                  <Label
+                    className="text-gray-600 dark:text-gray-400 required"
+                    htmlFor="Username"
+                  >
+                    Nom d'utilisateur
+                  </Label>
+                  <Input
+                    className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
+                    type="text"
+                    name="username"
+                    placeholder="Nom d'utilisateur"
+                    ref={usernameRef}
+                  />
+                  {usernameError && (
+                    <p className="text-red-500 text-sm">{usernameError}</p>
+                  )}
+                  <Label
+                    className="text-gray-600 dark:text-gray-400 required"
+                    htmlFor="Email"
+                  >
+                    Email
+                  </Label>
+                  <Input
+                    className={`border-gray-300 dark:border-gray-700 ${
+                      emailError ? "border-red-500" : ""
+                    } bg-white dark:bg-gray-800`}
+                    type="text"
+                    name="email"
+                    placeholder="Email"
+                    ref={emailRef}
+                  />
+                  {emailError && (
+                    <p className="text-red-500 text-sm">{emailError}</p>
+                  )}
+                  <Label
+                    className="text-gray-600 dark:text-gray-400 required"
+                    htmlFor="Password"
+                  >
+                    Mot de passe
+                  </Label>
+                  <Input
+                    className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
+                    type="password"
+                    name="password"
+                    placeholder="Mot de passe"
+                    ref={passwordRef}
+                  />
+                  {passwordError && (
+                    <p className="text-red-500 text-sm">{passwordError}</p>
+                  )}
+                  <Label
+                    className="text-gray-600 dark:text-gray-400 required"
+                    htmlFor="ConfirmPassword"
+                  >
+                    Confirmer le mot de passe
+                  </Label>
+                  <Input
+                    className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Confirmer le mot de passe"
+                    ref={confirmPasswordRef}
+                  />
+                  {confirmPasswordError && (
+                    <p className="text-red-500 text-sm">
+                      {confirmPasswordError}
+                    </p>
+                  )}
+                  <div className="h-7">
+                    {success && (
+                      <p className="text-green-500">Inscription réussie</p>
+                    )}
+                    {error && <p className="text-red-500">{error}</p>}
+                  </div>
+                  <Button type="submit" className="w-full">
+                    Inscription
+                  </Button>
+                </form>
+              </div>
             </div>
-            <Button type="submit">Inscription</Button>
-          </form>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 
