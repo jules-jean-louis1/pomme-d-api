@@ -1,4 +1,3 @@
-
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 
-const LoginPage = () => {
+const SignupPage = () => {
   const router = useRouter();
   const [submit, setSubmit] = useState(false);
   const [error, setError] = useState(false);
@@ -27,7 +26,7 @@ const LoginPage = () => {
     const password = passwordRef.current.value;
     const confirmPassword = confirmPasswordRef.current.value;
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,7 +39,6 @@ const LoginPage = () => {
         }),
       });
       const data = await response.json();
-  
 
       if (response.status === 400) {
         if (data.message === "Username already exists") {
@@ -64,10 +62,10 @@ const LoginPage = () => {
           );
         }
       }
-      if (response.status === 200) {
+      if (response.status === 201) {
         setSuccess(true);
         setTimeout(() => {
-          router.replace("/profil"); 
+          router.replace("/login");
         }, 3000);
       }
       console.log(data);
@@ -96,7 +94,7 @@ const LoginPage = () => {
     <div className="flex justify-center items-center h-screen">
       <div className="w-1/2 h-1/2">
         <div className="border rounded-md p-4 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <h2 className="text-3xl font-bold pb-3">Login</h2>
+          <h2 className="text-3xl font-bold pb-3">Inscription</h2>
           <form method="POST" onSubmit={handleSubmit}>
             <Label
               className="text-gray-600 dark:text-gray-400 required"
@@ -163,10 +161,10 @@ const LoginPage = () => {
               <p className="text-red-500 text-sm">{confirmPasswordError}</p>
             )}
             <div className="h-7">
-              {success && <p className="text-green-500">Login réussie</p>}
+              {success && <p className="text-green-500">Inscription réussie</p>}
               {error && <p className="text-red-500">{error}</p>}
             </div>
-            <Button type="submit">Login</Button>
+            <Button type="submit">Inscription</Button>
           </form>
         </div>
       </div>
@@ -174,4 +172,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;

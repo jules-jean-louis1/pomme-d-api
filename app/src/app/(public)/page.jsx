@@ -1,5 +1,5 @@
-"use client";
 
+"use client";
 
 
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import Link from 'next/link';
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -15,6 +16,7 @@ const Home = () => {
       const data = await response.json();
       console.log("Data:", data);
       setProducts(data.products);
+      setTotalPages(Math.ceil(data.count / 20)); // Assuming data.count contains the total number of products
     };
 
     fetchProducts();
@@ -34,7 +36,7 @@ const Home = () => {
         {products.map((product, index) => (
           <div key={index} className="flex flex-col border p-4 m-2 w-64">
             <h2 className="text-xl font-bold mb-2">{product.product_name}</h2>
-            <Link href={`/product/${product.id}`}>
+            <Link href={`/product/${product.code}`}>
                 <img src={product.image_thumb_url} alt={product.product_name} className="w-full h-64 object-cover mb-2" />
             </Link>
             <p className="text-sm text-gray-500">{product.brands}</p>
@@ -43,7 +45,8 @@ const Home = () => {
       </div>
       <div className="mb-8">
         <button onClick={prevPage} disabled={page === 1} className="mr-4">←</button>
-        <button onClick={nextPage} className="ml-4">→</button>
+        <span>Page {page} sur {totalPages}</span>
+        <button onClick={nextPage} disabled={page === totalPages} className="ml-4">→</button>
       </div>
     </div>
   );
