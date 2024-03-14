@@ -1,0 +1,8 @@
+{
+    "GOOGLE_CLIENT_ID": "898015156226-ui5upvcec4fcv53or4644djclp1gudja.apps.googleusercontent.com",
+    "GOOGLE_CLIENT_SECRET": "yGOCSPX-kGdaQtSMsINLutITDaUlFUcgm0Uw",
+    "GITHUB_CLIENT_ID": "b683906b3b871208c1fd",
+    "GITHUB_CLIENT_SECRET": "a7f56563e5241e8808a585418ce6241d75bc2a8d",
+    "NEXTAUTH_URL": "http://localhost:3000",
+    "NEXTAUTH_SECRET": "f7c1a2794ca2ef769fb1861347aae86f"
+  }
