@@ -40,25 +40,29 @@ export const authOptions = {
           throw new Error("Mot de passe incorrect");
         }
 
-        return { id: user.id, username: user.username, email: user.email };
+        if (user) {
+          return user;
+        } else {
+          return null;
+        }
       },
     }),
   ],
   callbacks: {
-    async jwt(token, user) {
+    async jwt({ token, user }) {
       if (user) {
         token.user = user;
       }
       return token;
     },
     async session({ session, token }) {
+      console.log("tokkennn", token);
+      console.log("id", token.user.id);
       session.user = {
-        ...session.user,
-        id: token.token.user.id,
-        name: token.token.user.username,
-        email: token.token.user.email,
+        id: token.user.id,
+        username: token.user.username,
+        email: token.user.email,
       };
-      console.log("session", session);
       return session;
     },
   },
