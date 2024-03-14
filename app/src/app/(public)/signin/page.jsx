@@ -2,9 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 const SignInPage = () => {
+  const session = useSession();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -16,7 +17,7 @@ const SignInPage = () => {
       callbackUrl: "/",
     });
   };
-
+  console.log(session);
   return (
     <main className="flex justify-center w-full">
       <section className="w-full p-16">

@@ -9,14 +9,6 @@ import { defineUserModel } from "@/models/models";
 
 export const authOptions = {
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID ?? "",
-      clientSecret: process.env.GITHUB_SECRET ?? "",
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_ID ?? "",
-      clientSecret: process.env.GOOGLE_SECRET ?? "",
-    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -27,7 +19,7 @@ export const authOptions = {
         const { username, password } = credentials;
 
         if (username === "" || password === "") {
-          throw new Error("Missing fields");
+          throw new Error("Champs manquants");
         }
 
         const sequelize = await getSequelizeConnection();
@@ -38,21 +30,37 @@ export const authOptions = {
             [Op.or]: [{ username: username }, { email: username }],
           },
         });
-
         if (!user) {
-          throw new Error("User does not exist");
+          throw new Error("Utilisateur introuvable");
         }
 
         const passwordMatch = bcrypt.compareSync(password, user.password);
 
         if (!passwordMatch) {
-          throw new Error("Incorrect password");
+          throw new Error("Mot de passe incorrect");
         }
 
-        return { id: user.id, name: user.username, email: user.email };
+        return { id: user.id, username: user.username, email: user.email };
       },
     }),
   ],
+  callbacks: {
+    async jwt(token, user) {
+      if (user) {
+        token.user = user;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user = {
+        ...session.user,
+        id: token.token.user.id,
+        name: token.token.user.username,
+        email: token.token.user.email,
+      };
+      return session;
+    },
+  },
   pages: {
     signIn: "/signin",
   },

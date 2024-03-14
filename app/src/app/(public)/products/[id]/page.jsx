@@ -20,13 +20,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useSession } from "next-auth/react";
 
 const Product = () => {
+  const session = useSession();
   const { id } = useParams();
   const router = useRouter();
   const [product, setProduct] = useState([]);
   const [imagesProduct, setImagesProduct] = useState([]);
+  const [favorite, setFavorite] = useState([]);
 
+  console.log(session);
   const handleBack = () => {
     router.back();
   };
@@ -65,10 +69,19 @@ const Product = () => {
     }
   };
 
-  console.log(product?.nutriments);
+  const getFavorite = async () => {
+    try {
+      const response = await fetch(`/api/favorites/${id_users}`);
+      const data = await response.json();
+      console.log(data);
+      // setFavorite(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
     getProduct();
-  }, [product]);
+  }, []);
   return (
     <>
       <main className="w-full h-full">
