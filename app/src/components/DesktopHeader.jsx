@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 const DesktopHeader = () => {
+  const { data: session } = useSession();
   return (
     <header className="flex items-center h-14 px-4 border-b bg-white md:px-6 dark:bg-gray-950">
       <Link className="flex items-center gap-2 mr-4" href="#">
@@ -21,12 +25,25 @@ const DesktopHeader = () => {
         </Link>
       </nav>
       <div className="flex space-x-2">
-        <Button size="sm" variant="outline">
-          Connexion
-        </Button>
-        <Button size="sm">
-          <Link href="/signup">Inscription</Link>
-        </Button>
+        {session ? (
+          <>
+            <Button variant="outline" size="sm">
+              <Link href="/profil">{session?.user.username}</Link>
+            </Button>
+            <Button size="sm" onClick={() => signOut()}>
+              Déconnexion
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button size="sm" onClick={() => signIn("github")}>
+              Connexion
+            </Button>
+            <Button size="sm">
+              <Link href="/signup">Inscription</Link>
+            </Button>
+          </>
+        )}
       </div>
     </header>
   );

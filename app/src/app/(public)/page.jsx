@@ -37,16 +37,16 @@ const Home = () => {
           <div key={index} className="flex flex-col border p-4 m-2 w-64">
             <h2 className="text-xl font-bold mb-2">{product.product_name}</h2>
             <Link href={`/product/${product.code}`}>
-                <img src={product.image_thumb_url} alt={product.product_name} className="w-full h-64 object-cover mb-2" />
+                <img src={product.image_front_small_url} alt={product.product_name} className="w-full h-64 object-cover mb-2" />
             </Link>
             <p className="text-sm text-gray-500">{product.brands}</p>
           </div>
         ))}
       </div>
       <div className="mb-8">
-        <button onClick={prevPage} disabled={page === 1} className="mr-4">←</button>
-        <span>Page {page} sur {totalPages}</span>
-        <button onClick={nextPage} disabled={page === totalPages} className="ml-4">→</button>
+      {page > 1 && <button onClick={prevPage} className="mr-4">←</button>}
+      <span>Page {page} sur {totalPages}</span>
+      <button onClick={nextPage} disabled={page === totalPages} className="ml-4">→</button>
       </div>
     </div>
   );
