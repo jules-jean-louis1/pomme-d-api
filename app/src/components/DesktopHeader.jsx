@@ -28,7 +28,7 @@ const DesktopHeader = () => {
         {session ? (
           <>
             <Button variant="outline" size="sm">
-              <Link href="/profil">{session?.user.name}</Link>
+              <Link href="/profil">{session?.user.username}</Link>
             </Button>
             <Button size="sm" onClick={() => signOut()}>
               Déconnexion

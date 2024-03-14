@@ -30,7 +30,6 @@ const Product = () => {
   const [imagesProduct, setImagesProduct] = useState([]);
   const [favorite, setFavorite] = useState([]);
 
-  console.log(session);
   const handleBack = () => {
     router.back();
   };
@@ -71,7 +70,7 @@ const Product = () => {
 
   const getFavorite = async () => {
     try {
-      const response = await fetch(`/api/favorites/${id_users}`);
+      const response = await fetch(`/api/favorites/${session?.user?.id}`);
       const data = await response.json();
       console.log(data);
       // setFavorite(data);
