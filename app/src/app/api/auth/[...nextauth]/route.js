@@ -58,11 +58,15 @@ export const authOptions = {
         name: token.token.user.username,
         email: token.token.user.email,
       };
+      console.log("session", session);
       return session;
     },
   },
   pages: {
     signIn: "/signin",
+  },
+  session: {
+    storage: "jwt",
   },
 };
 

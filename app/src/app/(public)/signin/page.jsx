@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { signIn, useSession } from "next-auth/react";
 
 const SignInPage = () => {
-  const session = useSession();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -17,7 +16,6 @@ const SignInPage = () => {
       callbackUrl: "/",
     });
   };
-  console.log(session);
   return (
     <main className="flex justify-center w-full">
       <section className="w-full p-16">
@@ -56,7 +54,6 @@ const SignInPage = () => {
                   }}
                 ></div>
               </div>
-
               <div>
                 <form action="" method="POST" onSubmit={handleSubmit}>
                   <Label

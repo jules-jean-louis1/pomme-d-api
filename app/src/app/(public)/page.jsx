@@ -2,15 +2,12 @@
 
 import { ProductsCard } from "@/components/products/ProductCard";
 import { Button } from "@/components/ui/button";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 const Home = () => {
-  const session = useSession();
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
 
-  console.log(session);
   const trendingProducts = async () => {
     try {
       const response = await fetch(

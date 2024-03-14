@@ -85,7 +85,7 @@ const Product = () => {
   return (
     <>
       <main className="w-full h-full">
-        <section className="flex flex-col px-72">
+        <section className="flex flex-col lg:px-20 2xl:px-72">
           <article className="flex w-full pt-7 space-x-4 items-center">
             <Button variant="outline" size="lg" onClick={handleBack}>
               Retour
