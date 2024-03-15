@@ -28,7 +28,9 @@ const Product = () => {
   const router = useRouter();
   const [product, setProduct] = useState([]);
   const [imagesProduct, setImagesProduct] = useState([]);
-  const [favorite, setFavorite] = useState([]);
+  const [favorite, setFavorite] = useState(false);
+  const [buttonClicked, setButtonClicked] = useState(null);
+  console.log(buttonClicked);
 
   const handleBack = () => {
     router.back();
@@ -67,20 +69,56 @@ const Product = () => {
       console.error(error);
     }
   };
-
-  const getFavorite = async () => {
+  const fetchFavorite = async (method) => {
     try {
-      const response = await fetch(`/api/favorites/${session?.user?.id}`);
+      const response = await fetch(
+        `/api/favorites/${id}/${session.data.user.id}`,
+        { method }
+      );
       const data = await response.json();
       console.log(data);
-      // setFavorite(data);
+      return data;
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const getFavorite = async () => {
+    const data = await fetchFavorite("GET");
+    setFavorite(data.favorite);
+  };
+
+  const addFavorite = async () => {
+    const data = await fetchFavorite("POST");
+    if (data.message === "Favorite added") {
+      setFavorite(true);
+    }
+  };
+
+  const removeFavorite = async () => {
+    const data = await fetchFavorite("DELETE");
+    if (data.message === "Favorite removed") {
+      setFavorite(false);
     }
   };
   useEffect(() => {
     getProduct();
   }, []);
+
+  useEffect(() => {
+    if (session?.data?.user?.id) {
+      getFavorite();
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (!session?.data?.user?.id || buttonClicked === null) return;
+    if (favorite) {
+      removeFavorite();
+    } else {
+      addFavorite();
+    }
+  }, [buttonClicked]);
   return (
     <>
       <main className="w-full h-full">
@@ -130,8 +168,12 @@ const Product = () => {
               className="p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 
       rounded-lg shadow-sm w-full"
             >
-              <Button variant="outline" size="lg">
-                Ajouter ce produit à mes favoris
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setButtonClicked(!favorite)}
+              >
+                {favorite ? "Retirer des favoris" : "Ajouter aux favoris"}
               </Button>
               <Table>
                 <TableHeader>
