@@ -34,7 +34,7 @@ const LoginPage = () => {
   
       if (response.status === 400) {
         if (data.message === "False username") {
-          setError("Nom d'utilisateur ou email incorrect");
+          setError("Nom d'utilisateur incorrect");
         }
         if (data.message === "False password") {
           setError("Mot de passe incorrect");
