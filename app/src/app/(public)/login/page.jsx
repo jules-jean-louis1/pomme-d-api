@@ -10,21 +10,15 @@ const LoginPage = () => {
   const [submit, setSubmit] = useState(false);
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [emailError, setEmailError] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
   const usernameRef = useRef(null);
-  const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const confirmPasswordRef = useRef(null);
 
   const sendData = async () => {
     const username = usernameRef.current.value;
-    const email = emailRef.current.value;
     const password = passwordRef.current.value;
-    const confirmPassword = confirmPasswordRef.current.value;
     try {
       const response = await fetch("/api/login", {
         method: "POST",
@@ -33,34 +27,17 @@ const LoginPage = () => {
         },
         body: JSON.stringify({
           username,
-          email,
           password,
-          confirmPassword,
         }),
       });
       const data = await response.json();
   
-
       if (response.status === 400) {
-        if (data.message === "Username already exists") {
-          setError("Nom d'utilisateur déjà existant");
+        if (data.message === "False username") {
+          setError("Nom d'utilisateur ou email incorrect");
         }
-        if (data.message === "Invalid Username") {
-          setUsernameError("Nom d'utilisateur invalide");
-        }
-        if (data.message === "Invalid email") {
-          setEmailError("Email invalide");
-        }
-        if (data.message === "Email already exists") {
-          setError("Email déjà existant");
-        }
-        if (data.message === "Passwords do not match") {
-          setError("Les mots de passe ne correspondent pas");
-        }
-        if (data.message === "Invalid password") {
-          setError(
-            "Le mot de passe doit contenir au moins 8 caractères, une lettre majuscule, une lettre minuscule et un chiffre"
-          );
+        if (data.message === "False password") {
+          setError("Mot de passe incorrect");
         }
       }
       if (response.status === 200) {
@@ -82,10 +59,8 @@ const LoginPage = () => {
   useEffect(() => {
     if (submit) {
       setError(false);
-      setEmailError(false);
       setUsernameError(false);
       setPasswordError(false);
-      setConfirmPasswordError(false);
       sendData();
       setSubmit(false);
     }
@@ -101,7 +76,7 @@ const LoginPage = () => {
               className="text-gray-600 dark:text-gray-400 required"
               htmlFor="Username"
             >
-              Nom d'utilisateur
+              Nom d'utilisateur  
             </Label>
             <Input
               className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
@@ -119,16 +94,6 @@ const LoginPage = () => {
             >
               Email
             </Label>
-            <Input
-              className={`border-gray-300 dark:border-gray-700 ${
-                emailError ? "border-red-500" : ""
-              } bg-white dark:bg-gray-800`}
-              type="text"
-              name="email"
-              placeholder="Email"
-              ref={emailRef}
-            />
-            {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
             <Label
               className="text-gray-600 dark:text-gray-400 required"
               htmlFor="Password"
@@ -144,22 +109,6 @@ const LoginPage = () => {
             />
             {passwordError && (
               <p className="text-red-500 text-sm">{passwordError}</p>
-            )}
-            <Label
-              className="text-gray-600 dark:text-gray-400 required"
-              htmlFor="ConfirmPassword"
-            >
-              Confirmer le mot de passe
-            </Label>
-            <Input
-              className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirmer le mot de passe"
-              ref={confirmPasswordRef}
-            />
-            {confirmPasswordError && (
-              <p className="text-red-500 text-sm">{confirmPasswordError}</p>
             )}
             <div className="h-7">
               {success && <p className="text-green-500">Login réussie</p>}
