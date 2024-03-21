@@ -7,7 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
-const SearchBar = ({ query, setQuery }) => {
+const DialogSearchProduct = ({
+  query,
+  setQuery,
+  selectedProduct,
+  setSelectedProduct,
+  onClose,
+}) => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -17,13 +23,18 @@ const SearchBar = ({ query, setQuery }) => {
     try {
       const response = await fetch(API_URL_V1);
       const data = await response.json();
-      console.log(data);
+
       setProducts(data.products || []);
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleClickProduct = (product) => {
+    setSelectedProduct(product);
+    onClose?.();
   };
 
   useEffect(() => {
@@ -38,11 +49,11 @@ const SearchBar = ({ query, setQuery }) => {
     return () => clearTimeout(timeoutId);
   }, [query]);
   return (
-    <div className="flex flex-col max-w-[600px] w-full">
+    <div className="flex flex-col justify-center w-full">
       <div className="flex items-center border rounded-lg w-full px-2 focus-visible:">
         <Search />
         <Input
-          value={query}
+          defaultValue={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Rechercher un produit"
           className="border-none focus-visible:ring-0"
@@ -52,29 +63,32 @@ const SearchBar = ({ query, setQuery }) => {
         )}
       </div>
       {products.length > 0 && query.length > 0 && (
-        <div className="min-h-fit max-h-[600px] w-full max-w-[600px] overflow-y-auto bg-white z-40 absolute top-[50px] ">
-          <Table>
-            <TableBody>
-              {products.map((product) => (
-                <TableRow key={product.code}>
-                  <TableCell>
-                    <img
-                      src={product.image_front_small_url}
-                      alt={product.abbreviated_product_name_fr}
-                    />
-                  </TableCell>
-                  <TableCell>{product.product_name}</TableCell>
-                  <TableCell>{product.brands}</TableCell>
-                  <TableCell>{product.quantity}</TableCell>
-                  <TableCell>{product.nutriscore_grade}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        <div
+          className={
+            "min-h-fit max-h-[350px] w-full overflow-y-auto bg-white z-40"
+          }
+        >
+          {products.map((product) => (
+            <article
+              key={product.code}
+              onClick={() => handleClickProduct(product)}
+              className="max-h-16 flex items-center"
+            >
+              <img
+                src={product.image_front_small_url}
+                alt={product.abbreviated_product_name_fr}
+                className="h-16 w-auto"
+              />
+              <p>{product.product_name}</p>
+              <p>{product.brands}</p>
+              <p>{product.quantity}</p>
+              <p>{product.nutriscore_grade}</p>
+            </article>
+          ))}
         </div>
       )}
     </div>
   );
 };
 
-export default SearchBar;
+export default DialogSearchProduct;

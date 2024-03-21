@@ -2,27 +2,36 @@
 
 import { ProductsCard } from "@/components/products/ProductCard";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import DialogSearchProduct from "@/components/DialogSearchProduct";
 
 const Home = () => {
+  const session = useSession();
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
+  const [date, setDate] = useState(new Date());
 
+  const [query, setQuery] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState([]);
+
+  console.log(selectedProduct);
+  const onClose = () => {
+    setQuery("");
+  };
   const trendingProducts = async () => {
     try {
       const response = await fetch(
@@ -48,25 +57,133 @@ const Home = () => {
   return (
     <main className="w-full h-full">
       <div className="lg:px-[125px] py-6">
-        <section className="flex flex-col justify-center items-center space-y-4">
-          <h1 className="font-bold text-5xl">
-            Mangez malin, économisez intelligemment.
-          </h1>
-          <div className="xl:mx-96">
-            <p className="text-lg text-center">
-              Suivez vos dépenses alimentaires, définissez des budgets et
-              découvrez des astuces pour manger mieux pour moins cher.
-              Enregistrez vos favoris, recevez des recommandations
-              personnalisées et explorez de nouvelles saveurs.
-            </p>
-          </div>
-          <Button size="lg">
-            <Link href="/signup" className="font-semibold text-xl">
-              Commencer a utiliser Kilimi
-            </Link>
-          </Button>
-        </section>
-        <section></section>
+        {session.data ? (
+          <>
+            <section>
+              <h1 className="text-4xl font-semibold">Bienvenue sur Kilimi</h1>
+              <div className="flex item-start">
+                <div className="w-fit">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    className="rounded-md border"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-semibold">Récap Journalier</h3>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline">Ajouter</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[800px]">
+                      <DialogHeader>
+                        <DialogTitle>Ajouter un aliments</DialogTitle>
+                        <DialogDescription>
+                          Make changes to your profile here. Click save when
+                          you're done.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogSearchProduct
+                        query={query}
+                        setQuery={setQuery}
+                        selectedProduct={selectedProduct}
+                        setSelectedProduct={setSelectedProduct}
+                        onClose={onClose}
+                      />
+                      <div className="w-full">
+                        {Object.keys(selectedProduct).length > 0 && (
+                          <>
+                            <div className="flex flex-col w-full border p-2 rounded-lg">
+                              <div className="flex h-8">
+                                <img
+                                  src={selectedProduct.image_front_small_url}
+                                  alt={
+                                    selectedProduct.abbreviated_product_name_fr
+                                  }
+                                />
+                                <h2 className="text-xl font-semibold">
+                                  {selectedProduct.brands || "Inconnu"}
+                                </h2>
+                              </div>
+                              <div className="flex items-center w-full space-x-2">
+                                <div>
+                                  <Label
+                                    htmlFor="energy_value"
+                                    className="text-right"
+                                  >
+                                    Quantité consommée
+                                  </Label>
+                                  <Input
+                                    id="energy_value"
+                                    className="col-span-3"
+                                    placeholder="Quantité"
+                                  />
+                                </div>
+                                <div>
+                                  <Label
+                                    htmlFor="energy_value"
+                                    className="text-right"
+                                  >
+                                    Portion (unité)
+                                  </Label>
+                                  <Input
+                                    id="energy_value"
+                                    className="col-span-3"
+                                    placeholder="Quantité"
+                                  />
+                                </div>
+                                <div>
+                                  <Label
+                                    htmlFor="energy_value"
+                                    className="text-right"
+                                  >
+                                    Date de consommation
+                                  </Label>
+                                  <Input
+                                    id="energy_value"
+                                    className="col-span-3"
+                                    placeholder="Quantité"
+                                    type="date"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                      <DialogFooter>
+                        <Button type="submit">Save changes</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-semibold">Récap Calories</h3>
+                </div>
+              </div>
+            </section>
+          </>
+        ) : (
+          <section className="flex flex-col justify-center items-center space-y-4">
+            <h1 className="font-bold text-5xl">
+              Mangez malin, économisez intelligemment.
+            </h1>
+            <div className="xl:mx-96">
+              <p className="text-lg text-center">
+                Suivez vos dépenses alimentaires, définissez des budgets et
+                découvrez des astuces pour manger mieux pour moins cher.
+                Enregistrez vos favoris, recevez des recommandations
+                personnalisées et explorez de nouvelles saveurs.
+              </p>
+            </div>
+            <Button size="lg">
+              <Link href="/signup" className="font-semibold text-xl">
+                Commencer a utiliser Kilimi
+              </Link>
+            </Button>
+          </section>
+        )}
       </div>
       <section className="flex flex-col justify-center items-center mt-12">
         <div>

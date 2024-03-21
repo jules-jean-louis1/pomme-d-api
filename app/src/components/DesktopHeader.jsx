@@ -23,9 +23,7 @@ const DesktopHeader = () => {
           </Link>
         </nav>
       </div>
-      <div className="z-50 absolute top-0 w-1/2">
-        <SearchBar query={query} setQuery={setQuery} />
-      </div>
+      <SearchBar query={query} setQuery={setQuery} />
       <div className="flex space-x-2">
         {session ? (
           <>
